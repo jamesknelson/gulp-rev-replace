@@ -1,9 +1,9 @@
 {
   "name": "gulp-rev-replace",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Rewrite occurences of filenames which have been renamed by gulp-rev",
   "main": "index.js",
-  "repository": "jamesknelson/gulp-rev-rename",
+  "repository": "jamesknelson/gulp-rev-replace",
   "scripts": {
     "test": "mocha"
   },

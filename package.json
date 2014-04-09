@@ -1,0 +1,36 @@
+{
+  "name": "gulp-rev-replace",
+  "version": "0.0.1",
+  "description": "Rewrite occurences of filenames which have been renamed by gulp-rev",
+  "main": "index.js",
+  "repository": "jamesknelson/gulp-rev-rename",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "gulpplugin",
+    "rev",
+    "revision",
+    "version",
+    "replace",
+    "asset"
+  ],
+  "author": {
+    "name": "James K Nelson",
+    "email": "james@numbattech.com",
+    "url": "http://jamesknelson.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "through2": "~0.4.1",
+    "gulp-util": "~2.2.14"
+  },
+  "devDependencies": {
+    "mocha": "~1.18.2",
+    "gulp-rev": "~0.3.2",
+    "gulp-filter": "~0.4.0"
+  }
+}

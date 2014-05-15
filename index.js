@@ -5,7 +5,7 @@ var gutil = require('gulp-util');
 var through = require('through2');
 
 function relPath(base, filePath) {
-  var newPath = filePath.replace(base, '');
+  var newPath = filePath.replace(base, '').replace(new RegExp(path.sep, 'g'),'/');
   if (filePath !== newPath && newPath[0] === path.sep) {
     return newPath.substr(1);
   } else {

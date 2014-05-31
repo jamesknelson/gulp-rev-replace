@@ -45,6 +45,10 @@ gulp.task("index", function() {
 });
 ```
 
+## Contributors
+
+Denis Parchenko
+
 
 ## License
 

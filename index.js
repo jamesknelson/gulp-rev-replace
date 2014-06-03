@@ -14,6 +14,11 @@ function relPath(base, filePath) {
   }
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+function escapeRegExp(string){
+  return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
 var plugin = function() {
   var renames = {};
   var cache = [];
@@ -52,7 +57,8 @@ var plugin = function() {
       contents = file.contents.toString();
       for (var rename in renames) {
         if (renames.hasOwnProperty(rename)) {
-          contents = contents.replace(rename, renames[rename]);
+          var search = new RegExp(escapeRegExp(rename), 'g');
+          contents   = contents.replace(search, renames[rename]);
         }
       }
       file.contents = new Buffer(contents);

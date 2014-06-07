@@ -45,6 +45,18 @@ gulp.task("index", function() {
 });
 ```
 
+## API
+
+### revReplace(options)
+
+#### options.canonicalUris
+Type: `boolean`
+
+Default: `true`
+
+Use canonical Uris when replacing filePaths, i.e. when working with filepaths
+with non forward slash (`/`) path separators we replace them with forward slash.
+
 ## Contributors
 
 Denis Parchenko

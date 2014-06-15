@@ -52,7 +52,7 @@ var plugin = function() {
       contents = file.contents.toString();
       for (var rename in renames) {
         if (renames.hasOwnProperty(rename)) {
-          contents = contents.replace(rename, renames[rename]);
+          contents = contents.split(rename).join(renames[rename]);
         }
       }
       file.contents = new Buffer(contents);

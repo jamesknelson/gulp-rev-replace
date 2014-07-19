@@ -60,6 +60,7 @@ with non forward slash (`/`) path separators we replace them with forward slash.
 ## Contributors
 
 Denis Parchenko
+Håkon K. Eide
 
 
 ## License

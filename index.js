@@ -6,7 +6,7 @@ var through = require('through2');
 var replaceInExtensions = ['.js', '.css', '.html', '.hbs'];
 
 function relPath(base, filePath) {
-  var newPath = filePath.replace(base, '');
+  var newPath = filePath.replace(base, '').replace(new RegExp(path.sep, 'g'),'/');
   if (filePath !== newPath && newPath[0] === path.sep) {
     return newPath.substr(1);
   } else {

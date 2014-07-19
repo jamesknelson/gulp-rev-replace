@@ -59,7 +59,11 @@ with non forward slash (`/`) path separators we replace them with forward slash.
 
 ## Contributors
 
+Chad Jablonski
 Denis Parchenko
+Håkon K. Eide
+Juan Lasheras
+
 
 
 ## License

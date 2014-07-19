@@ -9,12 +9,12 @@ var rev = require('gulp-rev');
 var revReplace = require('./index');
 var path = require('path');
 
-var svgFileBody = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg"></svg>';
-var cssFileBody = '@font-face { font-family: \'test\'; src: url(\'/fonts/font.svg\'); }\nbody { color: red; }';
-var htmlFileBody = '<html><head><link rel="stylesheet" href="/css/style.css" /></head><body></body></html>';
+var svgFileBody   = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg"></svg>';
+var cssFileBody   = '@font-face { font-family: \'test\'; src: url(\'/fonts/font.svg\'); }\nbody { color: red; }';
+var htmlFileBody  = '<html><head><link rel="stylesheet" href="/css/style.css" /></head><body><img src="images/image.png" /><img src="images/image.png" /></body></html>';
 
 it('should replace filenames in .css and .html files', function (cb) {
-  var filesToRevFilter = filter(['**/*.css', '**/*.svg']);
+  var filesToRevFilter = filter(['**/*.css', '**/*.svg', '**/*.png']);
 
   var stream = filesToRevFilter
     .pipe(rev())
@@ -24,6 +24,7 @@ it('should replace filenames in .css and .html files', function (cb) {
   var fileCount = 0;
   var unreplacedCSSFilePattern = /style\.css/;
   var unreplacedSVGFilePattern = /font\.svg/;
+  var unreplacedPNGFilePattern = /image\.png/;
   stream.on('data', function(file) {
     var contents = file.contents.toString();
     var extension = path.extname(file.path);
@@ -32,6 +33,10 @@ it('should replace filenames in .css and .html files', function (cb) {
       assert(
         !unreplacedCSSFilePattern.test(contents),
         'The renamed CSS file\'s name should be replaced'
+      );
+      assert(
+        !unreplacedPNGFilePattern.test(contents),
+        'The renamed PNG file\'s name should be globally replaced'
       );
     } else if (extension === '.css') {
       assert(
@@ -48,7 +53,7 @@ it('should replace filenames in .css and .html files', function (cb) {
     fileCount++;
   });
   stream.on('end', function() {
-    assert.equal(fileCount, 3, 'Only three files should pass through the stream');
+    assert.equal(fileCount, 4, 'Only four files should pass through the stream');
     cb();
   });
 
@@ -59,6 +64,10 @@ it('should replace filenames in .css and .html files', function (cb) {
   filesToRevFilter.write(new gutil.File({
     path: path.join('fonts', 'font.svg'),
     contents: new Buffer(svgFileBody)
+  }));
+  filesToRevFilter.write(new gutil.File({
+    path: 'images/image.png',
+    contents: new Buffer('PNG')
   }));
   filesToRevFilter.write(new gutil.File({
     path: 'index.html',

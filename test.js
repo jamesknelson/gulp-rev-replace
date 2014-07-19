@@ -53,12 +53,48 @@ it('should replace filenames in .css and .html files', function (cb) {
   });
 
   filesToRevFilter.write(new gutil.File({
-    path: 'css/style.css',
+    path: path.join('css', 'style.css'),
     contents: new Buffer(cssFileBody)
   }));
   filesToRevFilter.write(new gutil.File({
-    path: 'fonts/font.svg',
+    path: path.join('fonts', 'font.svg'),
     contents: new Buffer(svgFileBody)
+  }));
+  filesToRevFilter.write(new gutil.File({
+    path: 'index.html',
+    contents: new Buffer(htmlFileBody)
+  }));
+
+  filesToRevFilter.end();
+});
+
+it('should not canonicalize URIs when option is off', function (cb) {
+  var filesToRevFilter = filter(['**/*.css']);
+
+  var stream = filesToRevFilter
+    .pipe(rev())
+    .pipe(filesToRevFilter.restore())
+    .pipe(revReplace({canonicalUris: false}));
+
+  var unreplacedCSSFilePattern = /style\.css/;
+  stream.on('data', function(file) {
+    var contents = file.contents.toString();
+    var extension = path.extname(file.path);
+
+    if (extension === '.html') {
+      assert(
+        unreplacedCSSFilePattern.test(contents),
+        'The renamed CSS file\'s name should not be replaced'
+      );
+    }
+  });
+  stream.on('end', function() {
+    cb();
+  });
+
+  filesToRevFilter.write(new gutil.File({
+    path: 'css\\style.css',
+    contents: new Buffer(cssFileBody)
   }));
   filesToRevFilter.write(new gutil.File({
     path: 'index.html',

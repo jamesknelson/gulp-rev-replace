@@ -14,9 +14,22 @@ function relPath(base, filePath) {
   }
 }
 
-var plugin = function() {
+var plugin = function(options) {
   var renames = {};
   var cache = [];
+
+  options = options || {};
+  if (options.canonicalUris === undefined) {
+    options.canonicalUris = true;
+  }
+
+  function fmtPath(base, filePath) {
+    var newPath = relPath(base, filePath);
+    if (path.sep !== '/' && options.canonicalUris) {
+      newPath = newPath.split(path.sep).join('/');
+    }
+    return newPath;
+  }
 
   return through.obj(function(file, enc, cb) {
     if (file.isNull()) {
@@ -31,7 +44,7 @@ var plugin = function() {
 
     // Collect renames from reved files.
     if (file.revOrigPath) {
-      renames[relPath(file.revOrigBase, file.revOrigPath)] = relPath(file.base, file.path);
+      renames[fmtPath(file.revOrigBase, file.revOrigPath)] = fmtPath(file.base, file.path);
     }
 
     if (replaceInExtensions.indexOf(path.extname(file.path)) > -1) {

@@ -3,7 +3,7 @@
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
-var replaceInExtensions = ['.js', '.css', '.html', '.hbs'];
+var replaceInExtensions = ['.js', '.css', '.html', '.htm', '.hbs'];
 
 function relPath(base, filePath) {
   var newPath = filePath.replace(base, '');

@@ -57,13 +57,20 @@ Default: `true`
 Use canonical Uris when replacing filePaths, i.e. when working with filepaths
 with non forward slash (`/`) path separators we replace them with forward slash.
 
+#### options.replaceInExtensions
+Type: 'array'
+
+Default: ['.js', '.css', '.html', '.hbs']
+
+Only substitute in new filenames in files of these types
+
 ## Contributors
 
 Chad Jablonski
 Denis Parchenko
 Håkon K. Eide
 Juan Lasheras
-
+Simon Ihmig
 
 
 ## License

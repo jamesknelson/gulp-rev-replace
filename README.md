@@ -66,11 +66,11 @@ Only substitute in new filenames in files of these types.
 
 ## Contributors
 
-Chad Jablonski
-Denis Parchenko
-Håkon K. Eide
-Juan Lasheras
-Simon Ihmig
+- Chad Jablonski
+- Denis Parchenko
+- Håkon K. Eide
+- Juan Lasheras
+- Simon Ihmig
 
 
 ## License

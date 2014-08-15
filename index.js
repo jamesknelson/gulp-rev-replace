@@ -22,7 +22,7 @@ var plugin = function(options) {
     options.canonicalUris = true;
   }
 
-    options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
+  options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
 
   function fmtPath(base, filePath) {
     var newPath = relPath(base, filePath);

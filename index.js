@@ -3,7 +3,6 @@
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
-var replaceInExtensions = ['.js', '.css', '.html', '.hbs'];
 
 function relPath(base, filePath) {
   var newPath = filePath.replace(base, '');
@@ -22,6 +21,8 @@ var plugin = function(options) {
   if (options.canonicalUris === undefined) {
     options.canonicalUris = true;
   }
+
+    options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
 
   function fmtPath(base, filePath) {
     var newPath = relPath(base, filePath);
@@ -47,7 +48,7 @@ var plugin = function(options) {
       renames[fmtPath(file.revOrigBase, file.revOrigPath)] = fmtPath(file.base, file.path);
     }
 
-    if (replaceInExtensions.indexOf(path.extname(file.path)) > -1) {
+    if (options.replaceInExtensions.indexOf(path.extname(file.path)) > -1) {
       // Cache file to perform replacements in it later.
       cache.push(file);
     } else {

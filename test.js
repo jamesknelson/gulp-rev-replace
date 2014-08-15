@@ -13,7 +13,7 @@ var svgFileBody   = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "
 var cssFileBody   = '@font-face { font-family: \'test\'; src: url(\'/fonts/font.svg\'); }\nbody { color: red; }';
 var htmlFileBody  = '<html><head><link rel="stylesheet" href="/css/style.css" /></head><body><img src="images/image.png" /><img src="images/image.png" /></body></html>';
 
-it('should replace filenames in .css and .html files', function (cb) {
+it('should by default replace filenames in .css and .html files', function (cb) {
   var filesToRevFilter = filter(['**/*.css', '**/*.svg', '**/*.png']);
 
   var stream = filesToRevFilter
@@ -68,6 +68,42 @@ it('should replace filenames in .css and .html files', function (cb) {
   filesToRevFilter.write(new gutil.File({
     path: 'images/image.png',
     contents: new Buffer('PNG')
+  }));
+  filesToRevFilter.write(new gutil.File({
+    path: 'index.html',
+    contents: new Buffer(htmlFileBody)
+  }));
+
+  filesToRevFilter.end();
+});
+
+it('should not replace filenames in extensions not in replaceInExtensions', function (cb) {
+  var filesToRevFilter = filter(['**/*.css']);
+
+  var stream = filesToRevFilter
+    .pipe(rev())
+    .pipe(filesToRevFilter.restore())
+    .pipe(revReplace({replaceInExtensions: ['.svg']}));
+
+  var unreplacedCSSFilePattern = /style\.css/;
+  stream.on('data', function(file) {
+    var contents = file.contents.toString();
+    var extension = path.extname(file.path);
+
+    if (extension === '.html') {
+      assert(
+        unreplacedCSSFilePattern.test(contents),
+        'The renamed CSS file\'s name should not be replaced'
+      );
+    }
+  });
+  stream.on('end', function() {
+    cb();
+  });
+
+  filesToRevFilter.write(new gutil.File({
+    path: 'css\\style.css',
+    contents: new Buffer(cssFileBody)
   }));
   filesToRevFilter.write(new gutil.File({
     path: 'index.html',

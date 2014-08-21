@@ -20,6 +20,7 @@ and then use [gulp-rev](https://github.com/sindresorhus/gulp-rev) and gulp-rev-r
 ```js
 var gulp = require('gulp');
 var rev = require('gulp-rev');
+var revReplace = require('gulp-rev-replace');
 var useref = require('gulp-useref');
 var filter = require('gulp-filter');
 var uglify = require('gulp-uglify');

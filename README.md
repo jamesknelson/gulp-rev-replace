@@ -30,8 +30,10 @@ gulp.task("index", function() {
   var jsFilter = filter("**/*.js");
   var cssFilter = filter("**/*.css");
 
+  var userefAssets = useref.assets();
+
   return gulp.src("src/index.html")
-    .pipe(useref.assets())      // Concatenate with gulp-useref
+    .pipe(userefAssets)      // Concatenate with gulp-useref
     .pipe(jsFilter)
     .pipe(uglify())             // Minify any javascript sources
     .pipe(jsFilter.restore())
@@ -39,7 +41,7 @@ gulp.task("index", function() {
     .pipe(csso())               // Minify any CSS sources
     .pipe(cssFilter.restore())
     .pipe(rev())                // Rename the concatenated files
-    .pipe(useref.restore())
+    .pipe(userefAssets.restore())
     .pipe(useref())
     .pipe(revReplace())         // Substitute in new filenames
     .pipe(gulp.dest('public'));

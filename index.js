@@ -61,19 +61,36 @@ var plugin = function(options) {
     // files and push them through.
     var file;
     var contents;
-    for (var i = 0, ii = cache.length; i !== ii; i++) {
-      file = cache[i];
-      contents = file.contents.toString();
-      for (var rename in renames) {
-        if (renames.hasOwnProperty(rename)) {
-          contents = contents.split(rename).join(renames[rename]);
+    var self = this;
+
+    function replaceContents() {
+      for (var i = 0, ii = cache.length; i !== ii; i++) {
+        file = cache[i];
+        contents = file.contents.toString();
+        for (var rename in renames) {
+          if (renames.hasOwnProperty(rename)) {
+            contents = contents.split(rename).join(renames[rename]);
+          }
         }
+        file.contents = new Buffer(contents);
+        self.push(file);
       }
-      file.contents = new Buffer(contents);
-      this.push(file);
+
+      cb();
     }
 
-    cb();
+    if (options.manifest) {
+      options.manifest.on('data', function (file) {
+        var manifest = JSON.parse(file.contents.toString());
+        Object.keys(manifest).forEach(function (srcFile) {
+          renames[fmtPath('', srcFile)] = fmtPath('', manifest[srcFile]);
+        });
+      });
+      options.manifest.on('end', replaceContents);
+    }
+    else {
+      replaceContents();
+    }
   });
 };
 

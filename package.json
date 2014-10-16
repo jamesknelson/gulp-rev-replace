@@ -29,8 +29,9 @@
     "gulp-util": "~2.2.14"
   },
   "devDependencies": {
-    "mocha": "~1.18.2",
+    "event-stream": "^3.1.7",
+    "gulp-filter": "~0.4.0",
     "gulp-rev": "~0.3.2",
-    "gulp-filter": "~0.4.0"
+    "mocha": "~1.18.2"
   }
 }

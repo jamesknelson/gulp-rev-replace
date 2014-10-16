@@ -8,6 +8,7 @@ var filter = require('gulp-filter');
 var rev = require('gulp-rev');
 var revReplace = require('./index');
 var path = require('path');
+var es = require('event-stream');
 
 var svgFileBody   = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg"></svg>';
 var cssFileBody   = '@font-face { font-family: \'test\'; src: url(\'/fonts/font.svg\'); }\nbody { color: red; }';
@@ -147,4 +148,71 @@ it('should not canonicalize URIs when option is off', function (cb) {
   }));
 
   filesToRevFilter.end();
+});
+
+it('should replace filenames from manifest files when they are supplied', function (cb) {
+  var manifest = es.readArray([
+    new gutil.File({
+      path: '/project/rev-manifest.json',
+      contents: new Buffer(JSON.stringify({
+        'css/style.css': 'css/style-12345.css'
+      }))
+    }),
+    new gutil.File({
+      path: '/project/rev-image-manifest.json',
+      contents: new Buffer(JSON.stringify({
+        'images/image.png': 'images/image-12345.png',
+        'fonts/font.svg': 'fonts/font-12345.svg'
+      }))
+    })
+  ]);
+
+  var stream = revReplace({manifest: manifest});
+
+  var replacedCSSFilePattern = /style-12345\.css/;
+  var replacedSVGFilePattern = /font-12345\.svg/;
+  var replacedPNGFilePattern = /image-12345\.png/;
+  stream.on('data', function(file) {
+    var contents = file.contents.toString();
+    var extension = path.extname(file.path);
+
+    if (extension === '.html') {
+      assert(
+        replacedCSSFilePattern.test(contents),
+        'The renamed CSS file\'s name should be replaced'
+      );
+      assert(
+        replacedPNGFilePattern.test(contents),
+        'The renamed PNG file\'s name should be globally replaced'
+      );
+    } else if (extension === '.css') {
+      assert(
+        replacedSVGFilePattern.test(contents),
+        'The renamed SVG file\'s name should be replaced'
+      );
+    } else if (extension === '.svg') {
+      assert(
+        contents === svgFileBody,
+        'The SVG file should not be modified'
+      );
+    }
+  });
+  stream.on('end', function() {
+    cb();
+  });
+
+  stream.write(new gutil.File({
+    path: path.join('css', 'style.css'),
+    contents: new Buffer(cssFileBody)
+  }));
+  stream.write(new gutil.File({
+    path: path.join('fonts', 'font.svg'),
+    contents: new Buffer(svgFileBody)
+  }));
+  stream.write(new gutil.File({
+    path: 'index.html',
+    contents: new Buffer(htmlFileBody)
+  }));
+
+  stream.end();
 });

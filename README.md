@@ -67,6 +67,12 @@ Default: `['.js', '.css', '.html', '.hbs']`
 
 Only substitute in new filenames in files of these types.
 
+#### options.manifest
+Type: `Stream` (e.g., `gulp.src()`)
+
+Read JSON manifests written out by `rev`. Allows replacing filenames that were
+`rev`ed prior to the current task.
+
 ## Contributors
 
 - Chad Jablonski

@@ -148,3 +148,39 @@ it('should not canonicalize URIs when option is off', function (cb) {
 
   filesToRevFilter.end();
 });
+
+
+it('should add prefix to path', function (cb) {
+  var filesToRevFilter = filter(['**/*.css']);
+
+  var stream = filesToRevFilter
+    .pipe(rev())
+    .pipe(filesToRevFilter.restore())
+    .pipe(revReplace({prefix: 'http://example.com'}));
+
+  var replacedCSSFilePattern = /"http:\/\/example\.com\/css\/style-[^\.]+\.css"/;
+  stream.on('data', function(file) {
+    var contents = file.contents.toString();
+    var extension = path.extname(file.path);
+    if (extension === '.html') {
+      assert(
+        replacedCSSFilePattern.test(contents),
+        'The prefix should be added in to the file url'
+      );
+    }
+  });
+  stream.on('end', function() {
+    cb();
+  });
+
+  filesToRevFilter.write(new gutil.File({
+    path: 'css/style.css',
+    contents: new Buffer(cssFileBody)
+  }));
+  filesToRevFilter.write(new gutil.File({
+    path: 'index.html',
+    contents: new Buffer(htmlFileBody)
+  }));
+
+  filesToRevFilter.end();
+});

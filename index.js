@@ -22,6 +22,8 @@ var plugin = function(options) {
     options.canonicalUris = true;
   }
 
+  options.prefix = options.prefix || '';
+
   options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
 
   function fmtPath(base, filePath) {
@@ -45,7 +47,7 @@ var plugin = function(options) {
 
     // Collect renames from reved files.
     if (file.revOrigPath) {
-      renames[fmtPath(file.revOrigBase, file.revOrigPath)] = fmtPath(file.base, file.path);
+      renames[fmtPath(file.revOrigBase, file.revOrigPath)] = options.prefix + fmtPath(file.base, file.path);
     }
 
     if (options.replaceInExtensions.indexOf(path.extname(file.path)) > -1) {
@@ -68,6 +70,9 @@ var plugin = function(options) {
         if (renames.hasOwnProperty(rename)) {
           contents = contents.split(rename).join(renames[rename]);
         }
+      }
+      if (options.prefix) {
+        contents = contents.split('/' + options.prefix).join(options.prefix + '/');
       }
       file.contents = new Buffer(contents);
       this.push(file);

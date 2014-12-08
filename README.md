@@ -67,6 +67,13 @@ Default: `['.js', '.css', '.html', '.hbs']`
 
 Only substitute in new filenames in files of these types.
 
+#### options.prefix
+Type: `string`
+
+Default: ``
+
+Add the prefix string to each replacement.  
+
 ## Contributors
 
 - Chad Jablonski

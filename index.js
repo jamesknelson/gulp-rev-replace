@@ -11,7 +11,8 @@ function plugin(options) {
   var cache = [];
 
   options = options || {};
-  if (options.canonicalUris === undefined) {
+
+  if (!options.canonicalUris) {
     options.canonicalUris = true;
   }
 

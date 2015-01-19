@@ -6,15 +6,6 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 
-function relPath(base, filePath) {
-  var newPath = filePath.replace(base, '');
-  if (filePath !== newPath && newPath[0] === path.sep) {
-    return newPath.substr(1);
-  } else {
-    return newPath;
-  }
-}
-
 function plugin(options) {
   var renames = {};
   var cache = [];
@@ -27,10 +18,12 @@ function plugin(options) {
   options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
 
   function fmtPath(base, filePath) {
-    var newPath = relPath(base, filePath);
+    var newPath = path.relative(base, filePath);
+
     if (path.sep !== '/' && options.canonicalUris) {
       newPath = newPath.split(path.sep).join('/');
     }
+
     return newPath;
   }
 

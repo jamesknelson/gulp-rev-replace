@@ -18,16 +18,6 @@ function plugin(options) {
 
   options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
 
-  function fmtPath(base, filePath) {
-    var newPath = path.relative(base, filePath);
-
-    if (path.sep !== '/' && options.canonicalUris) {
-      newPath = newPath.split(path.sep).join('/');
-    }
-
-    return newPath;
-  }
-
   return through.obj(function(file, enc, cb) {
     if (file.isNull()) {
       this.push(file);
@@ -71,4 +61,14 @@ function plugin(options) {
 
     cb();
   });
+
+  function fmtPath(base, filePath) {
+    var newPath = path.relative(base, filePath);
+
+    if (path.sep !== '/' && options.canonicalUris) {
+      newPath = newPath.split(path.sep).join('/');
+    }
+
+    return newPath;
+  }
 }

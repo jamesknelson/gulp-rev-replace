@@ -18,7 +18,7 @@ function plugin(options) {
 
   options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
 
-  return through.obj(function(file, enc, cb) {
+  return through.obj(function collectRevs(file, enc, cb) {
     if (file.isNull()) {
       this.push(file);
       return cb();
@@ -35,29 +35,31 @@ function plugin(options) {
     }
 
     if (options.replaceInExtensions.indexOf(path.extname(file.path)) > -1) {
-      // Cache file to perform replacements in it later.
+      // file should be searched for replaces
       cache.push(file);
     } else {
+      // nothing to do with this file
       this.push(file);
     }
 
     cb();
-  }, function(cb) {
+  }, function replaceInFiles(cb) {
+    var stream = this;
+
     // Once we have a full list of renames, search/replace in the cached
     // files and push them through.
-    var file;
-    var contents;
-    for (var i = 0, ii = cache.length; i !== ii; i++) {
-      file = cache[i];
-      contents = file.contents.toString();
+    cache.forEach(function replaceInFile(file) {
+      var contents = file.contents.toString();
+
       for (var rename in renames) {
         if (renames.hasOwnProperty(rename)) {
           contents = contents.split(rename).join(renames[rename]);
         }
       }
+
       file.contents = new Buffer(contents);
-      this.push(file);
-    }
+      stream.push(file);
+    });
 
     cb();
   });

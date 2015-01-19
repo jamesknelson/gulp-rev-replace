@@ -7,7 +7,7 @@ var gutil = require('gulp-util');
 var through = require('through2');
 
 function plugin(options) {
-  var renames = {};
+  var renames = [];
   var cache = [];
 
   options = options || {};
@@ -31,7 +31,10 @@ function plugin(options) {
 
     // Collect renames from reved files.
     if (file.revOrigPath) {
-      renames[fmtPath(file.revOrigBase, file.revOrigPath)] = fmtPath(file.base, file.path);
+      renames.push({
+        unreved: fmtPath(file.revOrigBase, file.revOrigPath),
+        reved: fmtPath(file.base, file.path)
+      });
     }
 
     if (options.replaceInExtensions.indexOf(path.extname(file.path)) > -1) {
@@ -46,16 +49,16 @@ function plugin(options) {
   }, function replaceInFiles(cb) {
     var stream = this;
 
+    renames = renames.sort(byLongestUnreved);
+
     // Once we have a full list of renames, search/replace in the cached
     // files and push them through.
     cache.forEach(function replaceInFile(file) {
       var contents = file.contents.toString();
 
-      for (var rename in renames) {
-        if (renames.hasOwnProperty(rename)) {
-          contents = contents.split(rename).join(renames[rename]);
-        }
-      }
+      renames.forEach(function replaceOnce(rename) {
+        contents = contents.split(rename.unreved).join(rename.reved);
+      });
 
       file.contents = new Buffer(contents);
       stream.push(file);
@@ -73,4 +76,8 @@ function plugin(options) {
 
     return newPath;
   }
+}
+
+function byLongestUnreved(a, b) {
+  return a.unreved.length < b.unreved.length;
 }

@@ -74,6 +74,7 @@ Only substitute in new filenames in files of these types.
 - Håkon K. Eide
 - Juan Lasheras
 - Simon Ihmig
+- Vincent Voyer
 
 
 ## License

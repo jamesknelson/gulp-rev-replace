@@ -81,6 +81,7 @@ Add the prefix string to each replacement.
 - Håkon K. Eide
 - Juan Lasheras
 - Simon Ihmig
+- Vincent Voyer
 
 
 ## License

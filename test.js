@@ -184,3 +184,44 @@ it('should add prefix to path', function (cb) {
 
   filesToRevFilter.end();
 });
+
+it('should stop at first longest replace', function(cb) {
+  var jsFileBody = 'var loadFile = "nopestyle.css"';
+  var replacedJsFileBody = 'var loadFile = "nopestyle-19269897.css"';
+
+  var filesToRevFilter = filter(['**/*.css']);
+
+  var stream = filesToRevFilter
+    .pipe(rev())
+    .pipe(filesToRevFilter.restore())
+    .pipe(revReplace({canonicalUris: false}));
+
+  stream.on('data', function(file) {
+    if (file.path === 'script.js') {
+      assert.equal(
+        file.contents.toString(),
+        replacedJsFileBody,
+        'It should have replaced using the longest string match (nopestyle)'
+      );
+    }
+  });
+  stream.on('end', function() {
+    cb();
+  });
+
+  filesToRevFilter.write(new gutil.File({
+    path: 'style.css',
+    contents: new Buffer(cssFileBody)
+  }));
+  filesToRevFilter.write(new gutil.File({
+    path: 'nopestyle.css',
+    contents: new Buffer('boooooo')
+  }));
+  filesToRevFilter.write(new gutil.File({
+    path: 'script.js',
+    contents: new Buffer(jsFileBody)
+  }));
+
+  filesToRevFilter.end();
+});
+

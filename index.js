@@ -16,6 +16,8 @@ function plugin(options) {
     options.canonicalUris = true;
   }
 
+  options.prefix = options.prefix || '';
+
   options.replaceInExtensions = options.replaceInExtensions || ['.js', '.css', '.html', '.hbs'];
 
   return through.obj(function collectRevs(file, enc, cb) {
@@ -33,7 +35,7 @@ function plugin(options) {
     if (file.revOrigPath) {
       renames.push({
         unreved: fmtPath(file.revOrigBase, file.revOrigPath),
-        reved: fmtPath(file.base, file.path)
+        reved: options.prefix + fmtPath(file.base, file.path)
       });
     }
 
@@ -58,6 +60,9 @@ function plugin(options) {
 
       renames.forEach(function replaceOnce(rename) {
         contents = contents.split(rename.unreved).join(rename.reved);
+        if (options.prefix) {
+          contents = contents.split('/' + options.prefix).join(options.prefix + '/');
+        }
       });
 
       file.contents = new Buffer(contents);

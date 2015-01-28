@@ -71,6 +71,7 @@ Only substitute in new filenames in files of these types.
 
 - Chad Jablonski
 - Denis Parchenko
+- Evgeniy Vasilev
 - Håkon K. Eide
 - Juan Lasheras
 - Simon Ihmig

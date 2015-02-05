@@ -1,13 +1,12 @@
 'use strict';
 
-module.exports = {
-  plugin: plugin,
-  byLongestUnreved: byLongestUnreved
-};
+module.exports = plugin;
 
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
+
+var utils = require('./utils');
 
 function plugin(options) {
   var renames = [];
@@ -54,7 +53,7 @@ function plugin(options) {
   }, function replaceInFiles(cb) {
     var stream = this;
 
-    renames = renames.sort(byLongestUnreved);
+    renames = renames.sort(utils.byLongestUnreved);
 
     // Once we have a full list of renames, search/replace in the cached
     // files and push them through.
@@ -84,8 +83,4 @@ function plugin(options) {
 
     return newPath;
   }
-}
-
-function byLongestUnreved(a, b) {
-  return b.unreved.length - a.unreved.length;
 }

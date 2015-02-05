@@ -1,6 +1,9 @@
 'use strict';
 
-module.exports = plugin;
+module.exports = {
+  plugin: plugin,
+  byLongestUnreved: byLongestUnreved
+};
 
 var path = require('path');
 var gutil = require('gulp-util');
@@ -84,5 +87,5 @@ function plugin(options) {
 }
 
 function byLongestUnreved(a, b) {
-  return a.unreved.length < b.unreved.length;
+  return b.unreved.length - a.unreved.length;
 }

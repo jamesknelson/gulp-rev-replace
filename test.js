@@ -298,50 +298,74 @@ describe('utils.byLongestUnreved', function() {
       reved: 'env/deploy/features-2a501331.json'
     }];
 
-    var expected = [ { unreved: 'fonts/glyphicons-halflings-regular.woff2',
-      reved: 'fonts/glyphicons-halflings-regular-448c34a5.woff2' },
-    { unreved: 'fonts/glyphicons-halflings-regular.woff',
-      reved: 'fonts/glyphicons-halflings-regular-fa277232.woff' },
-    { unreved: 'fonts/glyphicons-halflings-regular.svg',
-      reved: 'fonts/glyphicons-halflings-regular-89889688.svg' },
-    { unreved: 'fonts/glyphicons-halflings-regular.ttf',
-      reved: 'fonts/glyphicons-halflings-regular-e18bbf61.ttf' },
-    { unreved: 'fonts/glyphicons-halflings-regular.eot',
-      reved: 'fonts/glyphicons-halflings-regular-f4769f9b.eot' },
-    { unreved: 'images/busy-indicator-lg-light.gif',
-      reved: 'images/busy-indicator-lg-light-25050875.gif' },
-    { unreved: 'images/busy-indicator-sm-light.gif',
-      reved: 'images/busy-indicator-sm-light-b464283c.gif' },
-    { unreved: 'images/icon-progress-indicator.png',
-      reved: 'images/icon-progress-indicator-b342c570.png' },
-    { unreved: 'images/busy-indicator-lg-dark.gif',
-      reved: 'images/busy-indicator-lg-dark-8f372b90.gif' },
-    { unreved: 'fonts/fontawesome-webfont.woff2',
-      reved: 'fonts/fontawesome-webfont-97493d3f.woff2' },
-    { unreved: 'fonts/fontawesome-webfont.woff',
-      reved: 'fonts/fontawesome-webfont-d9ee23d5.woff' },
-    { unreved: 'fonts/fontawesome-webfont.eot',
-      reved: 'fonts/fontawesome-webfont-f7c2b4b7.eot' },
-    { unreved: 'fonts/fontawesome-webfont.ttf',
-      reved: 'fonts/fontawesome-webfont-706450d7.ttf' },
-    { unreved: 'fonts/fontawesome-webfont.svg',
-      reved: 'fonts/fontawesome-webfont-29800836.svg' },
-    { unreved: 'env/deploy/features.json',
-      reved: 'env/deploy/features-2a501331.json' },
-    { unreved: 'images/scripps-swirl.png',
-      reved: 'images/scripps-swirl-65b0319e.png' },
-    { unreved: 'images/footer-logo.png',
-      reved: 'images/footer-logo-df3d73ed.png' },
-    { unreved: 'fonts/FontAwesome.otf',
-      reved: 'fonts/FontAwesome-0b462f5c.otf' },
-    { unreved: 'images/sprite_2x.png',
-      reved: 'images/sprite_2x-c7af344b.png' },
-    { unreved: 'images/sprite.png',
-      reved: 'images/sprite-9e275087.png' },
-    { unreved: 'data/favicon.ico',
-      reved: 'data/favicon-15d0f308.ico' },
-    { unreved: 'scripts/app.js', reved: 'scripts/app-137924b0.js' },
-    { unreved: 'styles/app.css', reved: 'styles/app-4858235a.css' } ];
+    var expected = [{
+      unreved: 'fonts/glyphicons-halflings-regular.woff2',
+      reved: 'fonts/glyphicons-halflings-regular-448c34a5.woff2'
+    }, {
+      unreved: 'fonts/glyphicons-halflings-regular.woff',
+      reved: 'fonts/glyphicons-halflings-regular-fa277232.woff'
+    }, {
+      unreved: 'fonts/glyphicons-halflings-regular.svg',
+      reved: 'fonts/glyphicons-halflings-regular-89889688.svg'
+    }, {
+      unreved: 'fonts/glyphicons-halflings-regular.ttf',
+      reved: 'fonts/glyphicons-halflings-regular-e18bbf61.ttf'
+    }, {
+      unreved: 'fonts/glyphicons-halflings-regular.eot',
+      reved: 'fonts/glyphicons-halflings-regular-f4769f9b.eot'
+    }, {
+      unreved: 'images/busy-indicator-lg-light.gif',
+      reved: 'images/busy-indicator-lg-light-25050875.gif'
+    }, {
+      unreved: 'images/busy-indicator-sm-light.gif',
+      reved: 'images/busy-indicator-sm-light-b464283c.gif'
+    }, {
+      unreved: 'images/icon-progress-indicator.png',
+      reved: 'images/icon-progress-indicator-b342c570.png'
+    }, {
+      unreved: 'images/busy-indicator-lg-dark.gif',
+      reved: 'images/busy-indicator-lg-dark-8f372b90.gif'
+    }, {
+      unreved: 'fonts/fontawesome-webfont.woff2',
+      reved: 'fonts/fontawesome-webfont-97493d3f.woff2'
+    }, {
+      unreved: 'fonts/fontawesome-webfont.woff',
+      reved: 'fonts/fontawesome-webfont-d9ee23d5.woff'
+    }, {
+      unreved: 'fonts/fontawesome-webfont.eot',
+      reved: 'fonts/fontawesome-webfont-f7c2b4b7.eot'
+    }, {
+      unreved: 'fonts/fontawesome-webfont.ttf',
+      reved: 'fonts/fontawesome-webfont-706450d7.ttf'
+    }, {
+      unreved: 'fonts/fontawesome-webfont.svg',
+      reved: 'fonts/fontawesome-webfont-29800836.svg'
+    }, {
+      unreved: 'env/deploy/features.json',
+      reved: 'env/deploy/features-2a501331.json'
+    }, {
+      unreved: 'images/scripps-swirl.png',
+      reved: 'images/scripps-swirl-65b0319e.png'
+    }, {
+      unreved: 'images/footer-logo.png',
+      reved: 'images/footer-logo-df3d73ed.png'
+    }, {
+      unreved: 'fonts/FontAwesome.otf',
+      reved: 'fonts/FontAwesome-0b462f5c.otf'
+    }, {
+      unreved: 'images/sprite_2x.png',
+      reved: 'images/sprite_2x-c7af344b.png'
+    }, {
+      unreved: 'images/sprite.png',
+      reved: 'images/sprite-9e275087.png'
+    }, {
+      unreved: 'data/favicon.ico',
+      reved: 'data/favicon-15d0f308.ico'
+    }, {
+      unreved: 'scripts/app.js', reved: 'scripts/app-137924b0.js'
+    }, {
+      unreved: 'styles/app.css', reved: 'styles/app-4858235a.css'
+    }];
 
     assert.deepEqual(renames.sort(utils.byLongestUnreved), expected);
   });

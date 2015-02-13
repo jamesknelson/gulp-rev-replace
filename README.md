@@ -48,6 +48,30 @@ gulp.task("index", function() {
 });
 ```
 
+It is also possible to use gulp-rev-replace without gulp-useref:
+
+```js
+var rev = require("gulp-rev");
+var replace = require("gulp-replace");
+gulp.task("revision", ["dist:css", "dist:js"], function(){
+  return gulp.src(["dist/**/*.css", "dist/**/*.js"])
+    .pipe(rev())
+    .pipe(gulp.dest(opt.distFolder))
+    .pipe(rev.manifest())
+    .pipe(gulp.dest(opt.distFolder))
+})
+
+gulp.task("revreplace", ["revision"], function(){
+  var manifest = require("./" + opt.distFolder + "/rev-manifest.json");
+  var stream = gulp.src(opt.distFolder + "/index.html");
+
+  Object.keys(manifest).reduce(function(stream, key){ 
+    return stream.pipe(replace(key, manifest[key]));
+  }, stream).pipe(gulp.dest(opt.distFolder));
+});
+```
+
+
 ## API
 
 ### revReplace(options)
@@ -79,6 +103,7 @@ Add the prefix string to each replacement.
 - Chad Jablonski
 - Denis Parchenko
 - Evgeniy Vasilev
+- George Song
 - Håkon K. Eide
 - Juan Lasheras
 - Simon Ihmig

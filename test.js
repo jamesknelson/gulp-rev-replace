@@ -1,12 +1,13 @@
-'use strict';
+/* global it describe */
 
-/* global it */
+'use strict';
 
 var assert = require('assert');
 var filter = require('gulp-filter');
 var gutil = require('gulp-util');
 var path = require('path');
 var rev = require('gulp-rev');
+var es = require('event-stream');
 
 var revReplace = require('./index');
 var utils = require('./utils');
@@ -225,6 +226,110 @@ it('should stop at first longest replace', function(cb) {
   }));
 
   filesToRevFilter.end();
+});
+
+describe('manifest option', function () {
+  it('should replace filenames from manifest files', function (cb) {
+    var manifest = es.readArray([
+      new gutil.File({
+        path: '/project/rev-manifest.json',
+        contents: new Buffer(JSON.stringify({
+          '/css/style.css': '/css/style-12345.css'
+        }))
+      }),
+      new gutil.File({
+        path: '/project/rev-image-manifest.json',
+        contents: new Buffer(JSON.stringify({
+          'images/image.png': 'images/image-12345.png',
+          '/fonts/font.svg': '/fonts/font-12345.svg'
+        }))
+      })
+    ]);
+
+    var stream = revReplace({manifest: manifest});
+
+    var replacedCSSFilePattern = /style-12345\.css/;
+    var replacedSVGFilePattern = /font-12345\.svg/;
+    var replacedPNGFilePattern = /image-12345\.png/;
+    stream.on('data', function(file) {
+      var contents = file.contents.toString();
+      var extension = path.extname(file.path);
+
+      if (extension === '.html') {
+        assert(
+          replacedCSSFilePattern.test(contents),
+          'The renamed CSS file\'s name should be replaced'
+        );
+        assert(
+          replacedPNGFilePattern.test(contents),
+          'The renamed PNG file\'s name should be globally replaced'
+        );
+      } else if (extension === '.css') {
+        assert(
+          replacedSVGFilePattern.test(contents),
+          'The renamed SVG file\'s name should be replaced'
+        );
+      } else if (extension === '.svg') {
+        assert(
+          contents === svgFileBody,
+          'The SVG file should not be modified'
+        );
+      }
+    });
+    stream.on('end', function() {
+      cb();
+    });
+
+    stream.write(new gutil.File({
+      path: path.join('css', 'style.css'),
+      contents: new Buffer(cssFileBody)
+    }));
+    stream.write(new gutil.File({
+      path: path.join('fonts', 'font.svg'),
+      contents: new Buffer(svgFileBody)
+    }));
+    stream.write(new gutil.File({
+      path: 'index.html',
+      contents: new Buffer(htmlFileBody)
+    }));
+
+    stream.end();
+  });
+
+  it('should add prefix to path', function (cb) {
+    var manifest = es.readArray([
+      new gutil.File({
+        path: '/project/rev-manifest.json',
+        contents: new Buffer(JSON.stringify({
+          '/css/style.css': '/css/style-12345.css'
+        }))
+      })
+    ]);
+
+    var stream = revReplace({prefix: 'http://example.com', manifest: manifest});
+
+    var replacedCSSFilePattern = /"http:\/\/example\.com\/css\/style-12345\.css"/;
+    stream.on('data', function(file) {
+      var contents = file.contents.toString();
+      var extension = path.extname(file.path);
+      if (extension === '.html') {
+        assert(
+          replacedCSSFilePattern.test(contents),
+          'The prefix should be added in to the file url'
+        );
+      }
+    });
+    stream.on('end', function() {
+      cb();
+    });
+
+    stream.write(new gutil.File({
+      path: 'index.html',
+      contents: new Buffer(htmlFileBody)
+    }));
+
+    stream.end();
+  });
 });
 
 describe('utils.byLongestUnreved', function() {

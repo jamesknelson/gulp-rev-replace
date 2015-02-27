@@ -111,6 +111,7 @@ Read JSON manifests written out by `rev`. Allows replacing filenames that were
 - George Song
 - Håkon K. Eide
 - Juan Lasheras
+- Majid Burney
 - Simon Ihmig
 - Vincent Voyer
 

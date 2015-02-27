@@ -5,6 +5,7 @@
   "main": "index.js",
   "repository": "jamesknelson/gulp-rev-replace",
   "scripts": {
+    "pretest": "jshint *.js",
     "test": "mocha"
   },
   "keywords": [
@@ -33,6 +34,7 @@
     "event-stream": "^3.1.7",
     "gulp-filter": "~0.4.0",
     "gulp-rev": "~0.3.2",
+    "jshint": "^2.6.0",
     "mocha": "~1.18.2"
   }
 }

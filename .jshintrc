@@ -1,5 +1,6 @@
 {
   "node": true,
+  "mocha": true,
   "browser": false,
   "esnext": true,
   "bitwise": true,

@@ -1,7 +1,5 @@
 'use strict';
 
-module.exports = plugin;
-
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
@@ -107,3 +105,5 @@ function plugin(options) {
     return filePath;
   }
 }
+
+module.exports = plugin;

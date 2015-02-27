@@ -53,34 +53,57 @@ function plugin(options) {
   }, function replaceInFiles(cb) {
     var stream = this;
 
-    renames = renames.sort(utils.byLongestUnreved);
+    if (options.manifest) {
+      // Read manifest file for the list of renames.
+      options.manifest.on('data', function (file) {
+        var manifest = JSON.parse(file.contents.toString());
+        Object.keys(manifest).forEach(function (srcFile) {
+          renames.push({
+            unreved: canonicalizeUri(srcFile),
+            reved: options.prefix + canonicalizeUri(manifest[srcFile])
+          });
+        });
+      });
+      options.manifest.on('end', replaceContents);
+    }
+    else {
+      replaceContents();
+    }
 
-    // Once we have a full list of renames, search/replace in the cached
-    // files and push them through.
-    cache.forEach(function replaceInFile(file) {
-      var contents = file.contents.toString();
+    function replaceContents() {
+      renames = renames.sort(utils.byLongestUnreved);
 
-      renames.forEach(function replaceOnce(rename) {
-        contents = contents.split(rename.unreved).join(rename.reved);
-        if (options.prefix) {
-          contents = contents.split('/' + options.prefix).join(options.prefix + '/');
-        }
+      // Once we have a full list of renames, search/replace in the cached
+      // files and push them through.
+      cache.forEach(function replaceInFile(file) {
+        var contents = file.contents.toString();
+
+        renames.forEach(function replaceOnce(rename) {
+          contents = contents.split(rename.unreved).join(rename.reved);
+          if (options.prefix) {
+            contents = contents.split('/' + options.prefix).join(options.prefix + '/');
+          }
+        });
+
+        file.contents = new Buffer(contents);
+        stream.push(file);
       });
 
-      file.contents = new Buffer(contents);
-      stream.push(file);
-    });
-
-    cb();
+      cb();
+    }
   });
 
   function fmtPath(base, filePath) {
     var newPath = path.relative(base, filePath);
 
+    return canonicalizeUri(newPath);
+  }
+
+  function canonicalizeUri(filePath) {
     if (path.sep !== '/' && options.canonicalUris) {
-      newPath = newPath.split(path.sep).join('/');
+      filePath = filePath.split(path.sep).join('/');
     }
 
-    return newPath;
+    return filePath;
   }
 }

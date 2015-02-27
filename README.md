@@ -52,7 +52,7 @@ It is also possible to use gulp-rev-replace without gulp-useref:
 
 ```js
 var rev = require("gulp-rev");
-var replace = require("gulp-replace");
+var revReplace = require("gulp-replace");
 gulp.task("revision", ["dist:css", "dist:js"], function(){
   return gulp.src(["dist/**/*.css", "dist/**/*.js"])
     .pipe(rev())
@@ -62,12 +62,11 @@ gulp.task("revision", ["dist:css", "dist:js"], function(){
 })
 
 gulp.task("revreplace", ["revision"], function(){
-  var manifest = require("./" + opt.distFolder + "/rev-manifest.json");
-  var stream = gulp.src(opt.distFolder + "/index.html");
+  var manifest = gulp.src("./" + opt.distFolder + "/rev-manifest.json");
 
-  Object.keys(manifest).reduce(function(stream, key){ 
-    return stream.pipe(replace(key, manifest[key]));
-  }, stream).pipe(gulp.dest(opt.distFolder));
+  return gulp.src(opt.distFolder + "/index.html")
+    .pipe(revReplace({manifest: manifest}))
+    .pipe(gulp.dest(opt.distFolder));
 });
 ```
 
@@ -96,7 +95,13 @@ Type: `string`
 
 Default: ``
 
-Add the prefix string to each replacement.  
+Add the prefix string to each replacement.
+
+#### options.manifest
+Type: `Stream` (e.g., `gulp.src()`)
+
+Read JSON manifests written out by `rev`. Allows replacing filenames that were
+`rev`ed prior to the current task.
 
 ## Contributors
 

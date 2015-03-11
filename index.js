@@ -17,6 +17,10 @@ function plugin(options) {
   if (!options.canonicalUris) {
     options.canonicalUris = true;
   }
+  
+  if (!options.relative) {
+    options.relative = true;
+  }
 
   options.prefix = options.prefix || '';
 
@@ -79,7 +83,24 @@ function plugin(options) {
         var contents = file.contents.toString();
 
         renames.forEach(function replaceOnce(rename) {
-          contents = contents.split(rename.unreved).join(rename.reved);
+          var unreved = rename.unreved;
+          var reved = rename.reved;
+          
+          // INFO equal base
+          if (options.relative && path.relative(file.base, path.resolve(rename.unreved)) === rename.unreved) {
+              var firstDirectoryFile = file.relative.split(path.sep).shift();
+              var firstDirectoryUnrevFile = rename.unreved.split(path.sep).shift();
+              var firstDirectoryRevFile = rename.reved.split(path.sep).shift();
+
+              if (firstDirectoryFile.indexOf(firstDirectoryUnrevFile) === 0
+                  && firstDirectoryFile.indexOf(firstDirectoryRevFile) === 0
+              ) {
+                  unreved = path.relative(path.dirname(file.relative), rename.unreved);
+                  reved = path.relative(path.dirname(file.relative), rename.reved);
+              }
+          }
+          
+          contents = contents.split(unreved).join(reved);
           if (options.prefix) {
             contents = contents.split('/' + options.prefix).join(options.prefix + '/');
           }

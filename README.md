@@ -103,6 +103,38 @@ Type: `Stream` (e.g., `gulp.src()`)
 Read JSON manifests written out by `rev`. Allows replacing filenames that were
 `rev`ed prior to the current task.
 
+### options.modifyUnreved, options.modifyReved
+Type: `Function`
+
+Modify the name of the unreved/reved files before using them by using a
+function. The filename is passed to the function as the first argument.
+
+For example, if in your manifest you have:
+
+```js
+{"js/app.js.map": "js/app-98adc164.js.map"}
+```
+
+If you wanted to get rid of the `js/` path just for `.map` files (because they
+are sourcemaps and the references to them are relative, not absolute) you could
+do the following:
+
+```js
+function replaceJsIfMap(filename) {
+    if (filename.indexOf('.map') > -1) {
+        return filename.replace('js/', '');
+    }
+}
+
+return gulp.src(opt.distFolder + '**/*.js')
+    .pipe(revReplace({
+        manifest: manifest,
+        modifyUnreved: replaceJsIfMap,
+        modifyReved: replaceJsIfMap
+    }))
+    .pipe(gulp.dest(opt.distFolder));
+```
+
 ## Contributors
 
 - Chad Jablonski

@@ -106,8 +106,8 @@ Read JSON manifests written out by `rev`. Allows replacing filenames that were
 ### options.modifyUnreved, options.modifyReved
 Type: `Function`
 
-Modify the name of the unreved/reved files before using them by using a
-function. The filename is passed to the function as the first argument.
+Modify the name of the unreved/reved files before using them. The filename is
+passed to the function as the first argument.
 
 For example, if in your manifest you have:
 

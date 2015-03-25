@@ -52,7 +52,7 @@ It is also possible to use gulp-rev-replace without gulp-useref:
 
 ```js
 var rev = require("gulp-rev");
-var revReplace = require("gulp-replace");
+var revReplace = require("gulp-rev-replace");
 gulp.task("revision", ["dist:css", "dist:js"], function(){
   return gulp.src(["dist/**/*.css", "dist/**/*.js"])
     .pipe(rev())

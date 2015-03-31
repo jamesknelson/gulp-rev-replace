@@ -124,6 +124,7 @@ function replaceJsIfMap(filename) {
     if (filename.indexOf('.map') > -1) {
         return filename.replace('js/', '');
     }
+    return filename;
 }
 
 return gulp.src(opt.distFolder + '**/*.js')

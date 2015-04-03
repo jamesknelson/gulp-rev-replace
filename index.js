@@ -59,8 +59,8 @@ function plugin(options) {
         var manifest = JSON.parse(file.contents.toString());
         Object.keys(manifest).forEach(function (srcFile) {
           renames.push({
-            unreved: canonicalizeUri(srcFile),
-            reved: options.prefix + canonicalizeUri(manifest[srcFile])
+            unreved: canonicalizeUri(shallowify(srcFile)),
+            reved: options.prefix + canonicalizeUri(shallowify(manifest[srcFile]))
           });
         });
       });
@@ -99,6 +99,19 @@ function plugin(options) {
     var newPath = path.relative(base, filePath);
 
     return canonicalizeUri(newPath);
+  }
+
+  // Only look at the last few parts of a path
+  function shallowify(filePath) {
+    if (options.shallowCompare) {
+
+      var separator = utils.getPathSeparator(filePath);
+
+      return filePath.split(separator)
+        .slice(-options.shallowCompare)
+        .join(separator);
+    }
+    return filePath;
   }
 
   function canonicalizeUri(filePath) {

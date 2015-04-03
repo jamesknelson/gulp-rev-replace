@@ -331,6 +331,59 @@ describe('manifest option', function () {
 
     stream.end();
   });
+
+  it('should only check top shallowCompare levels', function (cb) {
+    var manifest = es.readArray([
+      new gutil.File({
+        path: '/project/rev-manifest.json',
+        contents: new Buffer(JSON.stringify({
+          '/var/www/project/css/style.css': '/css/style-12345.css'
+        }))
+      })
+    ]);
+
+    var stream = revReplace({manifest: manifest, shallowCompare: 2});
+
+    var replacedCSSFilePattern = /"\/css\/style-12345\.css"/;
+    stream.on('data', function(file) {
+      var contents = file.contents.toString();
+
+      var extension = path.extname(file.path);
+      if (extension === '.html') {
+        assert(
+          replacedCSSFilePattern.test(contents),
+          'The renamed CSS file\'s name should be replaced'
+        );
+      }
+    });
+    stream.on('end', function() {
+      cb();
+    });
+
+    stream.write(new gutil.File({
+      path: 'index.html',
+      contents: new Buffer(htmlFileBody)
+    }));
+
+    stream.end();
+  });
+});
+
+describe('utils.getPathSeparator', function() {
+  it('should return \\ for backslashy paths', function() {
+    assert('\\' === utils.getPathSeparator('c:\\wamp\\www\\css\\style.css'),
+      'Backslash path should be detected');
+  });
+
+  it('should return / for foreslashy paths', function() {
+    assert('/' === utils.getPathSeparator('/css/style.css'),
+      'forwardslash paths should be detected');
+  });
+
+  it('should return a reasonable default if separator cannot be determined', function() {
+    assert('/' === utils.getPathSeparator('style.css'),
+      'Default value should be returned');
+  });
 });
 
 describe('utils.byLongestUnreved', function() {

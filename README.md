@@ -136,6 +136,12 @@ return gulp.src(opt.distFolder + '**/*.js')
     .pipe(gulp.dest(opt.distFolder));
 ```
 
+#### options.shallowCompare
+Type: `int`
+
+Only match manifest paths using the rightmost `shallowCompare` levels.
+e.g. `shallowCompare: 2` would match `../css/unicorn.css` to `/var/www/css/unicorn.css`
+
 ## Contributors
 
 - Chad Jablonski

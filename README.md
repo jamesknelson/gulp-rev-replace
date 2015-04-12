@@ -64,7 +64,7 @@ gulp.task("revision", ["dist:css", "dist:js"], function(){
 gulp.task("revreplace", ["revision"], function(){
   var manifest = gulp.src("./" + opt.distFolder + "/rev-manifest.json");
 
-  return gulp.src(opt.distFolder + "/index.html")
+  return gulp.src(opt.srcFolder + "/index.html")
     .pipe(revReplace({manifest: manifest}))
     .pipe(gulp.dest(opt.distFolder));
 });

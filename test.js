@@ -14,6 +14,7 @@ var utils = require('./utils');
 
 var svgFileBody   = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg"></svg>';
 var cssFileBody   = '@font-face { font-family: \'test\'; src: url(\'/fonts/font.svg\'); }\nbody { color: red; }';
+var jsFileBody   = 'console.log("Hello world"); //# sourceMappingURL=app.js.map';
 var htmlFileBody  = '<html><head><link rel="stylesheet" href="/css/style.css" /></head><body><img src="images/image.png" /><img src="images/image.png" /></body></html>';
 
 it('should by default replace filenames in .css and .html files', function (cb) {
@@ -474,4 +475,66 @@ describe('utils.byLongestUnreved', function() {
 
     assert.deepEqual(renames.sort(utils.byLongestUnreved), expected);
   });
+});
+
+describe('modifyUnreved and modifyReved options', function() {
+    it('should modify the names of reved and un-reved files', function(cb) {
+        var manifest = es.readArray([
+            new gutil.File({
+                path: '/project/rev-manifest.json',
+                contents: new Buffer(JSON.stringify({
+                    'js/app.js.map': 'js/app-12345.js.map',
+                    'css/style.css': 'css/style-12345.css'
+                }))
+            })
+        ]);
+
+        function replaceJsIfMap(filename) {
+            if (filename.indexOf('.map') > -1) {
+                return filename.replace('js/', '');
+            }
+            return filename;
+        }
+
+        var stream = revReplace({
+            manifest: manifest,
+            modifyUnreved: replaceJsIfMap,
+            modifyReved: replaceJsIfMap
+        });
+
+        var replacedJSMapFilePattern = /sourceMappingURL\=app-12345\.js\.map/;
+        var replacedCSSFilePattern = /css\/style-12345\.css/;
+
+        stream.on('data', function(file) {
+            var contents = file.contents.toString();
+            var extension = path.extname(file.path);
+
+            if (extension === '.js') {
+                assert(
+                    replacedJSMapFilePattern.test(contents),
+                    'The source map has been correctly replaced using modifyReved and modifyUnreved'
+                );
+            } else if (extension === '.html') {
+                assert(
+                    replacedCSSFilePattern.test(contents),
+                    'The renamed CSS file\'s name should be replaced and not affected by modifyReved or modifyUnreved'
+                );
+            }
+        });
+
+        stream.on('end', function() {
+            cb();
+        });
+
+        stream.write(new gutil.File({
+            path: path.join('js', 'app.js'),
+            contents: new Buffer(jsFileBody)
+        }));
+        stream.write(new gutil.File({
+            path: 'index.html',
+            contents: new Buffer(htmlFileBody)
+        }));
+
+        stream.end();
+    });
 });

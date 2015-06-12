@@ -147,6 +147,7 @@ return gulp.src(opt.distFolder + '**/*.js')
 - Majid Burney
 - Simon Ihmig
 - Vincent Voyer
+- Bradley Abrahams
 
 
 ## License

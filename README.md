@@ -103,7 +103,7 @@ Type: `Stream` (e.g., `gulp.src()`)
 Read JSON manifests written out by `rev`. Allows replacing filenames that were
 `rev`ed prior to the current task.
 
-### options.modifyUnreved, options.modifyReved
+#### options.modifyUnreved, options.modifyReved
 Type: `Function`
 
 Modify the name of the unreved/reved files before using them. The filename is

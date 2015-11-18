@@ -30,8 +30,8 @@
   },
   "devDependencies": {
     "event-stream": "^3.2.2",
-    "gulp-filter": "~0.4.0",
-    "gulp-rev": "~0.3.2",
-    "mocha": "~1.18.2"
+    "gulp-filter": "^3.0.1",
+    "gulp-rev": "^6.0.1",
+    "mocha": "^2.3.4"
   }
 }

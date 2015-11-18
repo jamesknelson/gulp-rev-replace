@@ -18,11 +18,11 @@ var jsFileBody   = 'console.log("Hello world"); //# sourceMappingURL=app.js.map'
 var htmlFileBody  = '<html><head><link rel="stylesheet" href="/css/style.css" /></head><body><img src="images/image.png" /><img src="images/image.png" /></body></html>';
 
 it('should by default replace filenames in .css and .html files', function (cb) {
-  var filesToRevFilter = filter(['**/*.css', '**/*.svg', '**/*.png']);
+  var filesToRevFilter = filter(['**/*.css', '**/*.svg', '**/*.png'], {restore: true});
 
   var stream = filesToRevFilter
     .pipe(rev())
-    .pipe(filesToRevFilter.restore())
+    .pipe(filesToRevFilter.restore)
     .pipe(revReplace());
 
   var fileCount = 0;
@@ -82,11 +82,11 @@ it('should by default replace filenames in .css and .html files', function (cb) 
 });
 
 it('should not replace filenames in extensions not in replaceInExtensions', function (cb) {
-  var filesToRevFilter = filter(['**/*.css']);
+  var filesToRevFilter = filter(['**/*.css'], {restore: true});
 
   var stream = filesToRevFilter
     .pipe(rev())
-    .pipe(filesToRevFilter.restore())
+    .pipe(filesToRevFilter.restore)
     .pipe(revReplace({replaceInExtensions: ['.svg']}));
 
   var unreplacedCSSFilePattern = /style\.css/;
@@ -118,11 +118,11 @@ it('should not replace filenames in extensions not in replaceInExtensions', func
 });
 
 it('should not canonicalize URIs when option is off', function (cb) {
-  var filesToRevFilter = filter(['**/*.css']);
+  var filesToRevFilter = filter(['**/*.css'], {restore: true});
 
   var stream = filesToRevFilter
     .pipe(rev())
-    .pipe(filesToRevFilter.restore())
+    .pipe(filesToRevFilter.restore)
     .pipe(revReplace({canonicalUris: false}));
 
   var unreplacedCSSFilePattern = /style\.css/;
@@ -155,11 +155,11 @@ it('should not canonicalize URIs when option is off', function (cb) {
 
 
 it('should add prefix to path', function (cb) {
-  var filesToRevFilter = filter(['**/*.css']);
+  var filesToRevFilter = filter(['**/*.css'], {restore: true});
 
   var stream = filesToRevFilter
     .pipe(rev())
-    .pipe(filesToRevFilter.restore())
+    .pipe(filesToRevFilter.restore)
     .pipe(revReplace({prefix: 'http://example.com'}));
 
   var replacedCSSFilePattern = /"http:\/\/example\.com\/css\/style-[^\.]+\.css"/;
@@ -191,13 +191,13 @@ it('should add prefix to path', function (cb) {
 
 it('should stop at first longest replace', function(cb) {
   var jsFileBody = 'var loadFile = "nopestyle.css"';
-  var replacedJsFileBody = 'var loadFile = "nopestyle-19269897.css"';
+  var replacedJsFileBody = 'var loadFile = "nopestyle-19269897ba.css"';
 
-  var filesToRevFilter = filter(['**/*.css']);
+  var filesToRevFilter = filter(['**/*.css'], {restore: true});
 
   var stream = filesToRevFilter
     .pipe(rev())
-    .pipe(filesToRevFilter.restore())
+    .pipe(filesToRevFilter.restore)
     .pipe(revReplace({canonicalUris: false}));
 
   stream.on('data', function(file) {

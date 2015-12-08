@@ -1,7 +1,7 @@
 [gulp](https://github.com/wearefractal/gulp)-rev-replace [![Build Status](https://travis-ci.org/jamesknelson/gulp-rev-replace.svg?branch=master)](https://travis-ci.org/jamesknelson/gulp-rev-replace)
 ================
 
-Rewrite occurences of filenames which have been renamed by gulp-rev
+Rewrite occurrences of filenames which have been renamed by gulp-rev
 
 ## Install
 

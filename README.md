@@ -35,10 +35,10 @@ gulp.task("index", function() {
     .pipe(useref())      // Concatenate with gulp-useref
     .pipe(jsFilter)
     .pipe(uglify())             // Minify any javascript sources
-    .pipe(jsFilter.restore())
+    .pipe(jsFilter.restore)
     .pipe(cssFilter)
     .pipe(csso())               // Minify any CSS sources
-    .pipe(cssFilter.restore())
+    .pipe(cssFilter.restore)
     .pipe(indexHtmlFilter)
     .pipe(rev())                // Rename the concatenated files (but not index.html)
     .pipe(indexHtmlFilter.restore)

@@ -81,7 +81,11 @@ function plugin(options) {
         renames.forEach(function replaceOnce(rename) {
           var unreved = options.modifyUnreved ? options.modifyUnreved(rename.unreved) : rename.unreved;
           var reved = options.modifyReved ? options.modifyReved(rename.reved) : rename.reved;
-          contents = contents.split(unreved).join(reved);
+
+          var tmp = unreved.split(".");
+          tmp[0] = tmp[0] + "(?:-[a-z0-9]{10})?";
+          var regRule = new RegExp(tmp.join('.'), 'ig');
+          contents = contents.split(regRule).join(reved);
           if (options.prefix) {
             contents = contents.split('/' + options.prefix).join(options.prefix + '/');
           }

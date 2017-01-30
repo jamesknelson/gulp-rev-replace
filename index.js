@@ -14,7 +14,7 @@ function plugin(options) {
 
   options = options || {};
 
-  if (!options.canonicalUris) {
+  if (typeof options.canonicalUris === 'undefined') {
     options.canonicalUris = true;
   }
 

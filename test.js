@@ -538,3 +538,47 @@ describe('modifyUnreved and modifyReved options', function() {
         stream.end();
     });
 });
+
+describe('replacer option', function() {
+    it('should use the provided replacer method', function(cb) {
+        var manifest = es.readArray([
+            new gutil.File({
+                path: '/project/rev-manifest.json',
+                contents: new Buffer(JSON.stringify({
+                    'css/style.css': 'css/style-12345.css'
+                }))
+            })
+        ]);
+
+        function replacerFn(contents, unreved, reved) {
+          return contents.replace(unreved, '~' + reved + '~');
+        }
+
+        var stream = revReplace({
+            manifest: manifest,
+            replacer: replacerFn
+        });
+
+        var replacedCSSFilePattern = /~css\/style-12345\.css~/;
+
+        stream.on('data', function(file) {
+            var contents = file.contents.toString();
+
+            assert(
+                replacedCSSFilePattern.test(contents),
+                'The renamed CSS file\'s name should be replaced by the replacer function'
+            );
+        });
+
+        stream.on('end', function() {
+            cb();
+        });
+
+        stream.write(new gutil.File({
+            path: 'index.html',
+            contents: new Buffer(htmlFileBody)
+        }));
+
+        stream.end();
+    });
+});

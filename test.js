@@ -550,7 +550,11 @@ describe('replacer option', function() {
             })
         ]);
 
-        function replacerFn(contents, unreved, reved) {
+        function replacerFn(contents, unreved, reved, file) {
+          assert(
+            file.path === 'index.html',
+            'The provided file object should be the file being searched for references'
+          );
           return contents.replace(unreved, '~' + reved + '~');
         }
 

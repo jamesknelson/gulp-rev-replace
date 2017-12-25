@@ -8,6 +8,15 @@ var through = require('through2');
 
 var utils = require('./utils');
 
+function encodeURI(obj) {
+  return obj.split('/').map(function(obj) {
+      return obj.split('.').map(function(obj) {
+        return encodeURIComponent(obj); 
+      }).join('.');
+    }).join('/');  
+}
+
+
 function plugin(options) {
   var renames = [];
   var cache = [];
@@ -58,10 +67,19 @@ function plugin(options) {
       options.manifest.on('data', function (file) {
         var manifest = JSON.parse(file.contents.toString());
         Object.keys(manifest).forEach(function (srcFile) {
+          var canonicalizedSrcFile = canonicalizeUri(srcFile);
+          var canonicalizedManifestSrcFile = canonicalizeUri(manifest[srcFile]);
           renames.push({
-            unreved: canonicalizeUri(srcFile),
-            reved: options.prefix + canonicalizeUri(manifest[srcFile])
+            unreved: canonicalizedSrcFile,
+            reved: options.prefix + canonicalizedManifestSrcFile
           });
+          var encodedSrcFile = encodeURI(canonicalizedSrcFile);
+          if(canonicalizedSrcFile !== encodedSrcFile) {
+            renames.push({
+              unreved: encodedSrcFile,
+              reved: options.prefix + encodeURI(canonicalizedManifestSrcFile)
+            })
+          }
         });
       });
       options.manifest.on('end', replaceContents);

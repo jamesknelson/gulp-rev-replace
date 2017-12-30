@@ -4,7 +4,7 @@
 
 var assert = require('assert');
 var filter = require('gulp-filter');
-var gutil = require('gulp-util');
+var Vinyl = require('vinyl');
 var path = require('path');
 var rev = require('gulp-rev');
 var es = require('event-stream');
@@ -61,19 +61,19 @@ it('should by default replace filenames in .css and .html files', function (cb) 
     cb();
   });
 
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: path.join('css', 'style.css'),
     contents: new Buffer(cssFileBody)
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: path.join('fonts', 'font.svg'),
     contents: new Buffer(svgFileBody)
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'images/image.png',
     contents: new Buffer('PNG')
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'index.html',
     contents: new Buffer(htmlFileBody)
   }));
@@ -105,11 +105,11 @@ it('should not replace filenames in extensions not in replaceInExtensions', func
     cb();
   });
 
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'css\\style.css',
     contents: new Buffer(cssFileBody)
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'index.html',
     contents: new Buffer(htmlFileBody)
   }));
@@ -141,11 +141,11 @@ it('should not canonicalize URIs when option is off', function (cb) {
     cb();
   });
 
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'css\\style.css',
     contents: new Buffer(cssFileBody)
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'index.html',
     contents: new Buffer(htmlFileBody)
   }));
@@ -177,11 +177,11 @@ it('should add prefix to path', function (cb) {
     cb();
   });
 
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'css/style.css',
     contents: new Buffer(cssFileBody)
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'index.html',
     contents: new Buffer(htmlFileBody)
   }));
@@ -213,15 +213,15 @@ it('should stop at first longest replace', function(cb) {
     cb();
   });
 
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'style.css',
     contents: new Buffer(cssFileBody)
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'nopestyle.css',
     contents: new Buffer('boooooo')
   }));
-  filesToRevFilter.write(new gutil.File({
+  filesToRevFilter.write(new Vinyl({
     path: 'script.js',
     contents: new Buffer(jsFileBody)
   }));
@@ -232,13 +232,13 @@ it('should stop at first longest replace', function(cb) {
 describe('manifest option', function () {
   it('should replace filenames from manifest files', function (cb) {
     var manifest = es.readArray([
-      new gutil.File({
+      new Vinyl({
         path: '/project/rev-manifest.json',
         contents: new Buffer(JSON.stringify({
           '/css/style.css': '/css/style-12345.css'
         }))
       }),
-      new gutil.File({
+      new Vinyl({
         path: '/project/rev-image-manifest.json',
         contents: new Buffer(JSON.stringify({
           'images/image.png': 'images/image-12345.png',
@@ -281,15 +281,15 @@ describe('manifest option', function () {
       cb();
     });
 
-    stream.write(new gutil.File({
+    stream.write(new Vinyl({
       path: path.join('css', 'style.css'),
       contents: new Buffer(cssFileBody)
     }));
-    stream.write(new gutil.File({
+    stream.write(new Vinyl({
       path: path.join('fonts', 'font.svg'),
       contents: new Buffer(svgFileBody)
     }));
-    stream.write(new gutil.File({
+    stream.write(new Vinyl({
       path: 'index.html',
       contents: new Buffer(htmlFileBody)
     }));
@@ -299,7 +299,7 @@ describe('manifest option', function () {
 
   it('should add prefix to path', function (cb) {
     var manifest = es.readArray([
-      new gutil.File({
+      new Vinyl({
         path: '/project/rev-manifest.json',
         contents: new Buffer(JSON.stringify({
           '/css/style.css': '/css/style-12345.css'
@@ -324,7 +324,7 @@ describe('manifest option', function () {
       cb();
     });
 
-    stream.write(new gutil.File({
+    stream.write(new Vinyl({
       path: 'index.html',
       contents: new Buffer(htmlFileBody)
     }));
@@ -480,7 +480,7 @@ describe('utils.byLongestUnreved', function() {
 describe('modifyUnreved and modifyReved options', function() {
     it('should modify the names of reved and un-reved files', function(cb) {
         var manifest = es.readArray([
-            new gutil.File({
+            new Vinyl({
                 path: '/project/rev-manifest.json',
                 contents: new Buffer(JSON.stringify({
                     'js/app.js.map': 'js/app-12345.js.map',
@@ -526,11 +526,11 @@ describe('modifyUnreved and modifyReved options', function() {
             cb();
         });
 
-        stream.write(new gutil.File({
+        stream.write(new Vinyl({
             path: path.join('js', 'app.js'),
             contents: new Buffer(jsFileBody)
         }));
-        stream.write(new gutil.File({
+        stream.write(new Vinyl({
             path: 'index.html',
             contents: new Buffer(htmlFileBody)
         }));

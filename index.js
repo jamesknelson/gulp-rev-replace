@@ -3,7 +3,7 @@
 module.exports = plugin;
 
 var path = require('path');
-var gutil = require('gulp-util');
+var PluginError = require('plugin-error');
 var through = require('through2');
 
 var utils = require('./utils');
@@ -29,7 +29,7 @@ function plugin(options) {
     }
 
     if (file.isStream()) {
-      this.emit('error', new gutil.PluginError('gulp-rev-replace', 'Streaming not supported'));
+      this.emit('error', new PluginError('gulp-rev-replace', 'Streaming not supported'));
       return cb();
     }
 

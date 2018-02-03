@@ -25,13 +25,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "gulp-util": "^3.0.7",
+    "plugin-error": "^0.1.2",
     "through2": "^2.0.0"
   },
   "devDependencies": {
     "event-stream": "^3.2.2",
     "gulp-filter": "^3.0.1",
     "gulp-rev": "^6.0.1",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "vinyl": "^2.1.0"
   }
 }

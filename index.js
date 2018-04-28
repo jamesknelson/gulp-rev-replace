@@ -2,6 +2,7 @@
 
 module.exports = plugin;
 
+var escapeRegExp = require('lodash.escaperegexp');
 var path = require('path');
 var PluginError = require('plugin-error');
 var through = require('through2');
@@ -78,10 +79,26 @@ function plugin(options) {
       cache.forEach(function replaceInFile(file) {
         var contents = file.contents.toString();
 
-        renames.forEach(function replaceOnce(rename) {
+        renames.forEach(function replaceOnce(rename, index) {
           var unreved = options.modifyUnreved ? options.modifyUnreved(rename.unreved) : rename.unreved;
           var reved = options.modifyReved ? options.modifyReved(rename.reved) : rename.reved;
-          contents = contents.split(unreved).join(reved);
+          var regexp = new RegExp(escapeRegExp(unreved), 'g');
+          var containingUnreved = [];
+          for (var i = 0; i < index; i+=1){
+            var longerUnreved = options.modifyUnreved ? options.modifyUnreved(renames[i].unreved) : renames[i].unreved;
+            if(longerUnreved.indexOf(unreved) !== -1){
+              containingUnreved.push(longerUnreved);
+            }
+          }
+          contents = contents.replace(regexp, function(match, offset, string){
+            for(var i = 0; i < containingUnreved.length; i+=1){
+              var element = containingUnreved[i];
+              if (string.substr(offset, element.length) === element || string.substr(offset + match.length - element.length, element.length) === element) {
+                return match;
+              }
+            }
+            return reved;
+          })
           if (options.prefix) {
             contents = contents.split('/' + options.prefix).join(options.prefix + '/');
           }

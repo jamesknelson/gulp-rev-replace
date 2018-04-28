@@ -117,6 +117,40 @@ it('should not replace filenames in extensions not in replaceInExtensions', func
   filesToRevFilter.end();
 });
 
+it('should not replace filenames contained in longer filenames', function(cb) {
+  var css = '@font-face { src:url(\'font.woff2\'), url(\'font.woff\'), url(\'myfont.woff\'); }';
+
+  var manifest = es.readArray([
+    new Vinyl({
+      path: 'rev-manifest.json',
+      contents: new Buffer(JSON.stringify({
+        'font.woff': 'font.woff?v=f56bc5932b',
+        'font.woff2': 'font.woff2?v=c6d1b13464',
+        'myfont.woff': 'myfont.woff?v=d98ag4566d'
+      }))
+    })
+  ]);
+
+  var stream = revReplace({ manifest: manifest });
+
+  stream.on('data', function(file) {
+    var content = file.contents.toString();
+
+    assert.equal(content, "@font-face { src:url('font.woff2?v=c6d1b13464'), url('font.woff?v=f56bc5932b'), url('myfont.woff?v=d98ag4566d'); }");
+  });
+
+  stream.on('end', function() {
+    cb();
+  });
+
+  stream.write(new Vinyl({
+    path: 'index.css',
+    contents: new Buffer(css)
+  }));
+
+  stream.end();
+});
+
 it('should not canonicalize URIs when option is off', function (cb) {
   var filesToRevFilter = filter(['**/*.css'], {restore: true});
 

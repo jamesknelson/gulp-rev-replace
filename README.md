@@ -3,6 +3,8 @@
 
 Rewrite occurrences of filenames which have been renamed by gulp-rev
 
+Note: this package is no longer maintained. Development continues in [TheDancingCode/gulp-rev-rewrite](https://github.com/TheDancingCode/gulp-rev-rewrite).
+
 ## Install
 
 ```bash

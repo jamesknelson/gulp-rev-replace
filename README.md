@@ -137,6 +137,40 @@ return gulp.src(opt.distFolder + '**/*.js')
     .pipe(gulp.dest(opt.distFolder));
 ```
 
+#### options.replacer
+Type: `Function`
+
+Default: `return contents.split(unreved).join(reved)`
+
+Use a custom method for replacing the file references. The function is provided
+with four arguments: the `contents` of the file being processed, the `unreved`
+filename whose references are being searched for, the `reved` filename with which
+they should be replaced, and the (Vinyl) `file` object that is being searched.
+Note that the `replacer` function is called after `modifyUnreved` and `modifyReved`
+have been applied.
+
+The function should return the new `contents`.
+
+For example if you only want to replace the reference if it's between (double)
+quotes in css files, you could do the following:
+
+```js
+function replaceFn(contents, unreved, reved, file) {
+    if (file.path.indexOf('.css') > -1) {
+        return contents.replace(new RegExp('"' + unreved + '"', 'g'), '"' + reved + '"');
+    } else {
+        return contents;
+    }
+}
+
+return gulp.src(opt.distFolder + '**/*.js')
+    .pipe(revReplace({
+        manifest: manifest,
+        replacer: replaceFn
+    }))
+    .pipe(gulp.dest(opt.distFolder));
+```
+
 ## Contributors
 
 - Chad Jablonski

@@ -79,8 +79,8 @@ function plugin(options) {
         var contents = file.contents.toString();
 
         renames.forEach(function replaceOnce(rename) {
-          var unreved = options.modifyUnreved ? options.modifyUnreved(rename.unreved) : rename.unreved;
-          var reved = options.modifyReved ? options.modifyReved(rename.reved) : rename.reved;
+          var unreved = options.modifyUnreved ? options.modifyUnreved(rename.unreved, file.path) : rename.unreved;
+          var reved = options.modifyReved ? options.modifyReved(rename.reved, file.path) : rename.reved;
           contents = contents.split(unreved).join(reved);
           if (options.prefix) {
             contents = contents.split('/' + options.prefix).join(options.prefix + '/');
